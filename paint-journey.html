@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artizen - A Drop of Colour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Alta';src:url('assets/fonts/Alta-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Alta';src:url('assets/fonts/Alta-Light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Feeling Passionate';src:url('assets/fonts/FeelingPassionate.woff2') format('woff2');font-weight:400;font-display:swap}
+/* never render numbers in the script font - digits fall back to the sans */
+@font-face{font-family:'Feeling Passionate';src:url('assets/fonts/Alta-Regular.woff2') format('woff2');font-weight:400;font-display:swap;unicode-range:U+0030-0039, U+002C}
+
+:root{
+  --olive-green:#7A7E5D;--sage-green:#AFB68C;--rust-orange:#A45024;--terracotta:#C98146;
+  --dark-brown:#65402D;--mauve-brown:#805B52;--warm-beige:#E0D3C0;--cream:#FDF0DD;--ink:#3E3326;
+  --script:'Feeling Passionate',cursive;--sans:'Alta',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+
+/* ---------- intro heading ---------- */
+.head{text-align:center;padding:4.5rem 1rem 1rem}
+.head .script{font-family:var(--script);color:var(--terracotta);font-size:clamp(1.8rem,5vw,2.8rem);display:block}
+.head h2{
+  font-weight:400;text-transform:uppercase;color:var(--rust-orange);
+  font-size:clamp(2rem,7vw,3.6rem);letter-spacing:.06em;line-height:.95;margin-top:.2rem;
+}
+.head p{max-width:34ch;margin:1rem auto 0;color:var(--mauve-brown);font-size:clamp(.9rem,2.2vw,1rem)}
+
+/* ---------- journey ---------- */
+.journey{position:relative;margin:1.5rem 0 4rem}
+.trail{position:absolute;inset:0;z-index:0;pointer-events:none}
+.trail svg{width:100%;height:100%;display:block}
+.trail path{fill:none}
+#trailBase{stroke:#F4DE9A;stroke-width:3;opacity:.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 16}
+#trailFill{stroke:#ECC95F;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+
+/* the travelling paint drop */
+.drop{
+  position:absolute;left:50%;top:0;z-index:0;width:clamp(54px,9vw,80px);height:clamp(56px,9.4vw,83px);
+  transform-origin:50% 92%;will-change:top,left,transform;filter:drop-shadow(0 4px 7px rgba(101,64,45,.35));
+}
+.drop svg{width:100%;height:100%;display:block}
+
+/* short note in the gap between Tote Bags and Pottery */
+.pj-note{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);transform-origin:center;z-index:3;white-space:nowrap;pointer-events:none}
+.pj-note .scr{font-family:'Caveat',cursive;color:var(--terracotta);font-weight:700;font-size:clamp(1.5rem,4vw,2.2rem);line-height:1;display:block}
+
+/* ---------- stops: photos dropped onto the path ---------- */
+.stops{position:absolute;inset:0;z-index:1}
+.stop{position:absolute;left:50%;top:0;display:block;width:min(118px,11%);
+  transform:translate(-50%,-50%) rotate(var(--rot,0deg));will-change:left,top}
+.stop .media{position:relative;width:100%}
+.stop .cap{position:absolute;bottom:100%;left:-18%;right:-18%;text-align:center;margin-bottom:.45rem;z-index:2}
+.stop .cap .num,.stop .cap p{display:none}
+.stop .cap .num{font-family:var(--script);color:var(--sage-green);font-size:clamp(2rem,6vw,3.2rem);line-height:1}
+.stop .cap h3{font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--rust-orange);font-size:clamp(1.2rem,3.2vw,1.9rem);margin:.1rem 0 .3rem;
+  text-shadow:1.5px 1.5px 0 #fff,-1.5px 1.5px 0 #fff,1.5px -1.5px 0 #fff,-1.5px -1.5px 0 #fff,0 3px 4px rgba(0,0,0,.12)}
+.stop .cap p{color:var(--mauve-brown);font-size:clamp(.82rem,2.2vw,.96rem);max-width:28ch;margin:0}
+
+/* uniform size (like Proposals); only the tilt varies per photo */
+.stop:nth-child(1){--rot:-4deg}
+.stop:nth-child(2){--rot:3deg}
+.stop:nth-child(3){--rot:2deg}
+.stop:nth-child(4){--rot:-3deg}
+.stop:nth-child(5){--rot:4deg}
+.stop:nth-child(6){--rot:-2deg}
+.stop:nth-child(7){--rot:3deg}
+.stop:nth-child(8){--rot:-4deg}
+.stop:nth-child(9){--rot:2deg}
+.stop:nth-child(10){--rot:-3deg}
+
+/* splat blob behind the image */
+.stop .media .splat{position:absolute;inset:-6% -5%;z-index:-1;border-radius:46% 54% 58% 42%/52% 46% 54% 48%;
+  transform:scale(.4) rotate(-8deg);opacity:0;transition:transform .7s cubic-bezier(.2,.85,.25,1),opacity .5s ease}
+.splat.olive{background:var(--olive-green)}
+.splat.mauve{background:var(--mauve-brown)}
+.splat.terra{background:var(--terracotta)}
+.splat.sage{background:var(--sage-green)}
+.splat.rust{background:var(--rust-orange)}
+.splat.dark{background:var(--dark-brown)}
+
+.stop .media img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:48% 52% 56% 44%/54% 46% 54% 46%;
+  opacity:0;transform:scale(.6) rotate(6deg);
+  transition:opacity .55s ease,transform .75s cubic-bezier(.2,.85,.25,1);
+  box-shadow:0 18px 40px rgba(101,64,45,.18);
+}
+.stop.show .media img{opacity:1;transform:scale(1) rotate(0)}
+.stop.show .media .splat{opacity:1;transform:scale(1) rotate(-4deg);transition-delay:.05s}
+.stop.show .cap{animation:rise .6s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* ---------- mobile: single column, drop hidden-ish but path stays ---------- */
+@media (max-width:640px){
+  .stop:nth-child(n){width:34% !important}
+  .stop .cap{margin-bottom:1.1rem}
+  .stop .media .splat{inset:-4%}
+  .drop{width:34px;height:42px}
+  #trailBase{stroke-width:4;opacity:.45}
+}
+/* tablet only (e.g. iPad): shrink the line labels so the long one doesn't overflow */
+@media (min-width:641px) and (max-width:900px){
+  .pj-note .scr{font-size:clamp(1rem,2.3vw,1.35rem)}
+}
+@media (prefers-reduced-motion:reduce){
+  .stop .media img,.stop .media .splat{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div style="text-align:center;padding:3.2rem 1rem 0">
+  <span style="font-family:var(--script);color:var(--terracotta);font-size:clamp(1.7rem,5vw,2.6rem);display:block">the studio</span>
+  <h2 style="font-weight:400;text-transform:uppercase;letter-spacing:.08em;color:var(--rust-orange);font-size:clamp(1.8rem,6vw,3rem);margin:.15rem 0 0">pick your <em style="font-family:var(--script);text-transform:none;font-style:normal;font-size:1.3em">craft</em></h2>
+</div>
+
+<section class="journey" id="journey">
+
+  <!-- winding paint path (behind) -->
+  <div class="trail" aria-hidden="true">
+    <svg id="trailSvg" preserveAspectRatio="none">
+      <path id="trailBase" d=""/>
+      <path id="trailFill" d=""/>
+    </svg>
+  </div>
+
+  <!-- travelling paint drop (in front of the photos) -->
+  <div class="drop" id="drop" aria-hidden="true">
+    <svg viewBox="0 0 48 50">
+      <g transform="translate(24,46) rotate(-48.7) scale(0.27) translate(-1,-103)" fill-rule="evenodd">
+        <path d="M0,103.78c11.7-8.38,30.46.62,37.83-14a16.66,16.66,0,0,0,.62-13.37,10.9,10.9,0,0,0-3.17-4.35,11.88,11.88,0,0,0-2.11-1.35c-9.63-4.78-19.67,1.91-25,10-4.9,7.43-7,16.71-8.18,23.07Z" fill="#C98146"/>
+        <path d="M37.24,65.42c2.82,1.52,6.69,5.25,7.61,9.32L65.83,64c-3.78-7.54-8.61-14-15.23-18.58-6.9,9.27-5.5,11.17-13.36,20Z" fill="#B9A88C"/>
+        <path d="M54.09,43.42a54.31,54.31,0,0,1,15,18.06l50.19-49.16c3.17-3,5-5.53,2.3-10.13A6.5,6.5,0,0,0,117.41,0,7.09,7.09,0,0,0,112.8,1.6L54.09,43.42Z" fill="#7A7E5D"/>
+      </g>
+      <ellipse cx="24" cy="46" rx="2.8" ry="1.9" fill="#ECC95F"/>
+    </svg>
+  </div>
+
+  <div class="pj-note" id="pjNote"><span class="scr">made by hand</span></div>
+  <div class="pj-note" id="pjNote2"><span class="scr">find your rhythm</span></div>
+  <div class="pj-note" id="pjNote3"><span class="scr">celebrate the moment</span></div>
+
+  <div class="stops" id="stops">
+    <article class="stop">
+      <div class="media"><span class="splat olive"></span><img src="assets/img/web-canvas.jpg" alt="Canvas painting"></div>
+      <div class="cap"><div class="num">01</div><h3>Canvas</h3><p>Pick a blank canvas and let the first brushstroke land.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat mauve"></span><img src="assets/img/u_tote.jpg" alt="Fabric painting on tote bags"></div>
+      <div class="cap"><div class="num">02</div><h3>Tote Bags</h3><p>Turn a plain tote or pouch into wearable art.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat terra"></span><img src="assets/img/u_plates.jpg" alt="Pottery painting"></div>
+      <div class="cap"><div class="num">03</div><h3>Pottery</h3><p>Glaze a cup, plate or vase in your own colours.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat sage"></span><img src="assets/img/web-mug.jpg" alt="A blank mug ready to paint"></div>
+      <div class="cap"><div class="num">04</div><h3>Mugs</h3><p>Paint a mug you'll reach for every morning.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat rust"></span><img src="assets/img/web-guitar.jpg" alt="Guitar lessons"></div>
+      <div class="cap"><div class="num">05</div><h3>Guitar</h3><p>Pick up the strings in a one-on-one session.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat dark"></span><img src="assets/img/web-piano.jpg" alt="Piano lessons"></div>
+      <div class="cap"><div class="num">06</div><h3>Piano</h3><p>Find the keys at your own gentle pace.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat olive"></span><img src="assets/img/web-drums.jpg" alt="Drum lessons"></div>
+      <div class="cap"><div class="num">07</div><h3>Drums</h3><p>Keep the rhythm with hands-on drum lessons.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat mauve"></span><img src="assets/img/web-balloons.jpg" alt="Birthday celebrations"></div>
+      <div class="cap"><div class="num">08</div><h3>Birthdays</h3><p>Celebrate with a private, creative party.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat terra"></span><img src="assets/img/u_candle.jpg" alt="Proposal setup"></div>
+      <div class="cap"><div class="num">09</div><h3>Proposals</h3><p>Set the scene for a moment to remember.</p></div>
+    </article>
+
+    <article class="stop">
+      <div class="media"><span class="splat sage"></span><img src="assets/img/web-gathering.jpg" alt="Group gatherings"></div>
+      <div class="cap"><div class="num">10</div><h3>Gatherings</h3><p>Bring your people together over art.</p></div>
+    </article>
+  </div>
+
+</section>
+
+<script>
+(function(){
+  var WAVES=2.6;
+  var trail=document.querySelector('.trail');
+  var svg=document.getElementById('trailSvg');
+  var base=document.getElementById('trailBase');
+  var fill=document.getElementById('trailFill');
+  var journey=document.getElementById('journey');
+  var drop=document.getElementById('drop');
+  var note=document.getElementById('pjNote');
+  var note2=document.getElementById('pjNote2');
+  var note3=document.getElementById('pjNote3');
+  var len=0;
+
+  // smooth curve through a list of points (Catmull-Rom -> bezier)
+  function spline(p){
+    var T=0.2;
+    if(p.length<2) return '';
+    var d='M '+p[0].x.toFixed(1)+' '+p[0].y.toFixed(1);
+    for(var i=0;i<p.length-1;i++){
+      var p0=p[i-1]||p[i], p1=p[i], p2=p[i+1], p3=p[i+2]||p[i+1];
+      var c1x=p1.x+(p2.x-p0.x)*T, c1y=p1.y+(p2.y-p0.y)*T;
+      var c2x=p2.x-(p3.x-p1.x)*T, c2y=p2.y-(p3.y-p1.y)*T;
+      d+=' C '+c1x.toFixed(1)+' '+c1y.toFixed(1)+', '+c2x.toFixed(1)+' '+c2y.toFixed(1)+', '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);
+    }
+    return d;
+  }
+
+  // build one continuous serpentine that sweeps full width, side to side, down the screen
+  function build(){
+    var W=trail.clientWidth;
+    if(!W) return;
+    var stops=document.querySelectorAll('.stop');
+    var n=stops.length; if(!n) return;
+    var sw=stops[0].offsetWidth || W*0.14;         // a photo's width
+    var sh=sw;                                     // photos are 1:1
+    var tanA=Math.tan(17*Math.PI/180);             // descent angle ~17° (desktop)
+    var mobile=W<640;
+    var maxAmp=Math.max(20, W/2 - (sw/2+12));      // widest that keeps photos on-screen
+    var amp=Math.min(maxAmp, W*(mobile?0.20:0.22));// narrower, centred sweep
+    // wide: spacing follows the ~12° angle. phone: a comfortable gap so photos never pile up
+    var spacing=mobile ? sh*1.5 : amp*tanA;
+    var pad=sh*0.75;
+    var off=amp*(mobile?0.5:0.45);                 // how far the "middle" photos shift off centre
+    var xR=W/2+amp, xL=W/2-amp;                    // right / left extremes
+    var pat=[xR, W/2+off, xL, W/2-off];            // R, centre-right, L, centre-left (middles alternate)
+    var y0=20 + sh*0.5;                            // first photo ~20px into the line
+    var gapExtra=sh*1.8;                           // extra room after Tote Bags for the note
+    var pts=[];
+    for(var i=0;i<n;i++){
+      var x=pat[i%4], y=y0 + i*spacing;
+      if(i>=2){ y+=gapExtra; }
+      if(i>=4){ y+=gapExtra; }
+      if(i>=8){ y+=gapExtra; }
+      if(i===n-1){ y+=spacing*0.5; }
+      pts.push({x:x,y:y});
+      stops[i].style.left=x.toFixed(1)+'px';
+      stops[i].style.top=y.toFixed(1)+'px';
+    }
+    var Hpx=Math.round(pts[n-1].y + sh*0.5 + pad);
+    function placeNote(el,a,b){
+      if(!el) return;
+      var mx=(pts[a].x+pts[b].x)/2, my=(pts[a].y+pts[b].y)/2;
+      var ddx=pts[b].x-pts[a].x, ddy=pts[b].y-pts[a].y;
+      var sl=Math.hypot(ddx,ddy)||1, px=-ddy/sl, py=ddx/sl;
+      if(py>0){ px=-px; py=-py; }                 // perpendicular pointing up
+      var ang=Math.atan2(ddy,ddx)*180/Math.PI;
+      if(ang>90){ ang-=180; } else if(ang<-90){ ang+=180; }   // keep text upright
+      el.style.left=(mx+px*28)+'px';
+      el.style.top=(my+py*28)+'px';
+      el.style.transform='translate(-50%,-50%) rotate('+ang.toFixed(1)+'deg)';
+    }
+    placeNote(note,1,2);
+    placeNote(note2,3,4);
+    placeNote(note3,7,8);
+    journey.style.height=Hpx+'px';
+    svg.setAttribute('viewBox','0 0 '+W+' '+Hpx);
+    // smooth curve through every photo centre, with a short lead-in/out at top and bottom
+    var s0=(pts[1].x-pts[0].x)/(pts[1].y-pts[0].y);
+    var sN=(pts[n-1].x-pts[n-2].x)/(pts[n-1].y-pts[n-2].y);
+    var allPts=[{x:pts[0].x+s0*(0-pts[0].y),y:0}];
+    for(var j=0;j<n;j++){ allPts.push(pts[j]); }
+    allPts.push({x:pts[n-1].x+sN*(Hpx-pts[n-1].y),y:Hpx});
+    var d=spline(allPts);
+    base.setAttribute('d',d);
+    fill.setAttribute('d',d);
+    len=fill.getTotalLength();
+    fill.style.strokeDasharray=len;
+    setTarget(); curP=tgtP; render(curP);
+  }
+
+  var curP=0, tgtP=0, raf=null;
+  var ease=(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)?1:0.16;
+  function render(p){
+    if(!len) return;
+    fill.style.strokeDashoffset=len*(1-p);
+    var dd=p*len;
+    var pt=fill.getPointAtLength(dd);
+    var pf=fill.getPointAtLength(Math.min(len,dd+6));
+    var pb=fill.getPointAtLength(Math.max(0,dd-6));
+    var ang=Math.atan2(pf.y-pb.y, pf.x-pb.x)*180/Math.PI - 90;
+    drop.style.left=pt.x+'px';
+    drop.style.top=pt.y+'px';
+    drop.style.transform='translate(-50%,-92%) rotate('+(ang+60).toFixed(1)+'deg)';
+  }
+  function tick(){
+    curP += (tgtP-curP)*ease;
+    if(Math.abs(tgtP-curP)<0.0006){ curP=tgtP; render(curP); raf=null; return; }
+    render(curP);
+    raf=requestAnimationFrame(tick);
+  }
+  function setTarget(){ var r=journey.getBoundingClientRect(); tgtP=Math.max(0,Math.min(1,(window.innerHeight*0.5 - r.top)/r.height)); }
+  function onScroll(){ if(!len) return; setTarget(); if(!raf) raf=requestAnimationFrame(tick); }
+
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',build);
+  window.addEventListener('load',build);
+  document.querySelectorAll('.stop img').forEach(function(im){ if(!im.complete) im.addEventListener('load',build); });
+  build();
+
+  // splatter reveal for each stop
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });
+  },{threshold:.35});
+  document.querySelectorAll('.stop').forEach(function(s){io.observe(s)});
+})();
+</script>
+</body>
+</html>

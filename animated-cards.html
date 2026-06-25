@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artizen — Animated Cards</title>
+<style>
+  @font-face {
+    font-family: 'Alta';
+    src: url('assets/fonts/Alta-Regular.woff2') format('woff2');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Alta';
+    src: url('assets/fonts/Alta-Light.woff2') format('woff2');
+    font-weight: 300;
+  }
+
+  :root {
+    --olive-green:  #7A7E5D;
+    --sage-green:   #AFB68C;
+    --rust-orange:  #A45024;
+    --terracotta:   #C98146;
+    --dark-brown:   #65402D;
+    --mauve-brown:  #805B52;
+    --warm-beige:   #E0D3C0;
+    --cream:        #FDF0DD;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Alta', 'Segoe UI', sans-serif;
+    color: var(--dark-brown);
+    min-height: 100vh;
+    padding: 64px 24px 120px;
+  }
+
+  .page-head {
+    max-width: 920px;
+    margin: 0 auto 56px;
+    text-align: center;
+  }
+  .page-head h1 {
+    font-weight: 300;
+    font-size: clamp(34px, 5vw, 54px);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .page-head p {
+    margin-top: 12px;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--mauve-brown);
+  }
+
+  .grid {
+    max-width: 644px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .col-b { transform: translateY(72px); }
+
+  .card {
+    border-radius: 60% 60% 32px 32px / 26% 26% 32px 32px;
+    padding: 40px 32px 40px;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 24px 48px -20px rgba(101, 64, 45, 0.35);
+    display: flex;
+    flex-direction: column;
+  }
+  .card-wrap + .card-wrap { margin-top: 40px; }
+
+  .card-sage   { background: linear-gradient(160deg, #c3caa0 0%, var(--sage-green) 45%, #99a077 100%); }
+  .card-brown  { background: linear-gradient(165deg, #7d5340 0%, var(--dark-brown) 55%, #4a2e20 100%); }
+  .card-beige  { background: linear-gradient(160deg, #f4e9d6 0%, var(--warm-beige) 55%, #cfbfa6 100%); }
+  .card-olive  { background: linear-gradient(165deg, #8f9470 0%, var(--olive-green) 55%, #5f6347 100%); }
+
+  .stage {
+    width: 100%;
+    height: 300px;
+    position: relative;
+  }
+  .stage canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative;
+    z-index: 1;
+  }
+
+
+  .card-label {
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    margin-top: 20px;
+    opacity: 0.85;
+    text-align: center;
+    color: var(--mauve-brown);
+  }
+  .card-title {
+    font-size: clamp(30px, 4vw, 40px);
+    line-height: 1.06;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-top: 6px;
+    text-align: center;
+    color: var(--dark-brown);
+  }
+
+  /* Mobile: keep two cards per row, scaled down */
+  @media (max-width: 720px) {
+    body { padding: 40px 16px 80px; }
+    .page-head { margin-bottom: 36px; }
+    .grid { gap: 16px; }
+    .col-b { transform: translateY(40px); }
+    .card { padding: 22px 14px; }
+    .stage { height: 165px; }
+    .card-label { font-size: 13px; margin-top: 14px; }
+    .card-title { font-size: 21px; }
+    .card-wrap + .card-wrap { margin-top: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <h1>Artizen</h1>
+  <p>Craft workshops in Amman — pick your next obsession</p>
+</header>
+
+<div class="grid">
+  <div class="col-a">
+
+    <div class="card-wrap">
+      <div class="card card-sage">
+        <div class="stage" id="stage-arrow"></div>
+      </div>
+      <div class="card-label">ready when you are</div>
+      <div class="card-title">Start Your<br>Journey</div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card card-beige">
+        <div class="stage" id="stage-brush"></div>
+      </div>
+      <div class="card-label">i'm craving</div>
+      <div class="card-title">Brush &amp;<br>Canvas</div>
+    </div>
+
+  </div>
+  <div class="col-b">
+
+    <div class="card-wrap">
+      <div class="card card-brown">
+        <div class="stage" id="stage-vase"></div>
+      </div>
+      <div class="card-label">i'm craving</div>
+      <div class="card-title">Hands<br>in Clay</div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="card card-olive">
+        <div class="stage" id="stage-cup"></div>
+      </div>
+      <div class="card-label">i'm craving</div>
+      <div class="card-title">Latte<br>Art Lab</div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Procedural texture engine (fBm noise + baked normal maps) ---------- */
+
+  function makeNoise(seed) {
+    var p = new Uint8Array(256), perm = new Uint8Array(512);
+    var s = seed || 1;
+    function rnd() { s = (s * 16807) % 2147483647; return (s & 0xffff) / 0xffff; }
+    for (var i = 0; i < 256; i++) p[i] = i;
+    for (var j = 255; j > 0; j--) {
+      var k = Math.floor(rnd() * (j + 1));
+      var t = p[j]; p[j] = p[k]; p[k] = t;
+    }
+    for (var m = 0; m < 512; m++) perm[m] = p[m & 255];
+    function val(h) { return h / 255 * 2 - 1; }
+    function fade(t) { return t * t * (3 - 2 * t); }
+    function noise(x, y) {
+      var xi = Math.floor(x) & 255, yi = Math.floor(y) & 255;
+      var xf = x - Math.floor(x), yf = y - Math.floor(y);
+      var v00 = val(perm[perm[xi] + yi]);
+      var v10 = val(perm[perm[xi + 1] + yi]);
+      var v01 = val(perm[perm[xi] + yi + 1]);
+      var v11 = val(perm[perm[xi + 1] + yi + 1]);
+      var u = fade(xf), v = fade(yf);
+      var a = v00 + (v10 - v00) * u;
+      var b = v01 + (v11 - v01) * u;
+      return a + (b - a) * v;
+    }
+    function fbm(x, y, oct) {
+      var amp = 0.5, freq = 1, sum = 0;
+      for (var o = 0; o < oct; o++) {
+        sum += amp * noise(x * freq, y * freq);
+        freq *= 2; amp *= 0.5;
+      }
+      return sum;
+    }
+    return { noise: noise, fbm: fbm };
+  }
+
+  function canvasTexture(c) {
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  }
+
+  // Bake a tangent-space normal map from a height field (Sobel-ish)
+  function normalFromHeight(hArr, size, strength) {
+    var c = document.createElement('canvas');
+    c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(size, size);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        var l = hArr[y * size + ((x - 1 + size) % size)];
+        var r = hArr[y * size + ((x + 1) % size)];
+        var u = hArr[((y - 1 + size) % size) * size + x];
+        var d = hArr[((y + 1) % size) * size + x];
+        var nx = (l - r) * strength, ny = (d - u) * strength;
+        var len = Math.sqrt(nx * nx + ny * ny + 1);
+        var i = (y * size + x) * 4;
+        img.data[i]     = (nx / len * 0.5 + 0.5) * 255;
+        img.data[i + 1] = (ny / len * 0.5 + 0.5) * 255;
+        img.data[i + 2] = (1 / len * 0.5 + 0.5) * 255;
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return canvasTexture(c);
+  }
+
+  // Glazed surface: gentle hand-applied waviness + fine tooth (used for arrow + cup)
+  function makeGlazeMaps(rgb, vary, scale, seed) {
+    var size = 512, n = makeNoise(seed);
+    var c = document.createElement('canvas');
+    c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(size, size);
+    var hArr = new Float32Array(size * size);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        var u = x / size * scale, v = y / size * scale;
+        var m = n.fbm(u, v, 4) * 0.5 + 0.5;
+        var fine = n.fbm(u * 9, v * 9, 2) * 0.5 + 0.5;
+        var h = m * 0.8 + fine * 0.2;
+        hArr[y * size + x] = h;
+        var f = 1 + (h - 0.5) * 2 * vary;
+        var i = (y * size + x) * 4;
+        img.data[i]     = Math.min(255, rgb[0] * f);
+        img.data[i + 1] = Math.min(255, rgb[1] * f);
+        img.data[i + 2] = Math.min(255, rgb[2] * f);
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return { map: canvasTexture(c), normalMap: normalFromHeight(hArr, size, 2.0) };
+  }
+
+  // Terracotta clay: mottled tone, fine grain, iron speckles, matched roughness
+  function makeClayMaps() {
+    var size = 512, n = makeNoise(7), n2 = makeNoise(23);
+    var dark = [150, 88, 44], light = [219, 150, 92];
+    var c = document.createElement('canvas');
+    c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(size, size);
+    var rc = document.createElement('canvas');
+    rc.width = rc.height = size;
+    var rctx = rc.getContext('2d');
+    var rimg = rctx.createImageData(size, size);
+    var hArr = new Float32Array(size * size);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        var u = x / size * 5, v = y / size * 5;
+        var m = n.fbm(u, v, 5) * 0.5 + 0.5;          // broad mottle
+        var fine = n.fbm(u * 8, v * 8, 3) * 0.5 + 0.5; // clay grain
+        var h = m * 0.55 + fine * 0.45;
+        var rr = dark[0] + (light[0] - dark[0]) * m;
+        var gg = dark[1] + (light[1] - dark[1]) * m;
+        var bb = dark[2] + (light[2] - dark[2]) * m;
+        var fm = 1 + (fine - 0.5) * 0.14;
+        rr *= fm; gg *= fm; bb *= fm;
+        // iron speckles
+        if (n2.noise(u * 14, v * 14) > 0.74) {
+          rr *= 0.62; gg *= 0.6; bb *= 0.6; h -= 0.18;
+        }
+        hArr[y * size + x] = h;
+        var i = (y * size + x) * 4;
+        img.data[i] = rr; img.data[i + 1] = gg; img.data[i + 2] = bb; img.data[i + 3] = 255;
+        var rough = 150 + h * 70;
+        rimg.data[i] = rough; rimg.data[i + 1] = rough; rimg.data[i + 2] = rough; rimg.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    rctx.putImageData(rimg, 0, 0);
+    return {
+      map: canvasTexture(c),
+      normalMap: normalFromHeight(hArr, size, 3.0),
+      roughnessMap: canvasTexture(rc)
+    };
+  }
+
+  // Turned wood: axis-aligned grain rings warped by noise + stretched fibers
+  function makeWoodMaps() {
+    var size = 512, n = makeNoise(11);
+    var deep = [86, 51, 31], lightw = [147, 96, 56];
+    var c = document.createElement('canvas');
+    c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(size, size);
+    var hArr = new Float32Array(size * size);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        var u = x / size, v = y / size;
+        var distort = n.fbm(u * 2.5, v * 2.5, 4) * 0.16;
+        var band = Math.sin((u + distort) * Math.PI * 16);
+        var t = Math.pow(band * 0.5 + 0.5, 1.35);
+        var fiber = n.fbm(u * 34, v * 4, 3) * 0.5 + 0.5;  // fibers stretched along length
+        var h = t * 0.65 + fiber * 0.35;
+        hArr[y * size + x] = h;
+        var fm = 1 + (fiber - 0.5) * 0.18;
+        var i = (y * size + x) * 4;
+        img.data[i]     = (deep[0] + (lightw[0] - deep[0]) * t) * fm;
+        img.data[i + 1] = (deep[1] + (lightw[1] - deep[1]) * t) * fm;
+        img.data[i + 2] = (deep[2] + (lightw[2] - deep[2]) * t) * fm;
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    return { map: canvasTexture(c), normalMap: normalFromHeight(hArr, size, 1.6) };
+  }
+
+  // Cute enamel mug: cream glaze, sage polka dots, terracotta rim band
+  function makeMugMaps() {
+    var size = 512, n = makeNoise(17);
+    var c = document.createElement('canvas');
+    c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(size, size);
+    var hArr = new Float32Array(size * size);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        var u = x / size * 3, v = y / size * 3;
+        var m = n.fbm(u, v, 4) * 0.5 + 0.5;
+        var h = m;
+        hArr[y * size + x] = h;
+        var f = 1 + (m - 0.5) * 0.06;
+        var i = (y * size + x) * 4;
+        img.data[i] = Math.min(255, 253 * f);
+        img.data[i + 1] = Math.min(255, 240 * f);
+        img.data[i + 2] = Math.min(255, 221 * f);
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    // sage polka dots (grid wraps seamlessly around the mug)
+    ctx.fillStyle = '#afb68c';
+    var step = 64, rad = 13;
+    for (var row = 0; row < size / step + 1; row++) {
+      var offset = (row % 2) * step / 2;
+      for (var col = 0; col < size / step + 1; col++) {
+        var dx = col * step + offset, dy = row * step + step / 2;
+        ctx.beginPath();
+        ctx.arc(dx, dy, rad, 0, Math.PI * 2);
+        ctx.fill();
+        if (dx - size > -rad) { ctx.beginPath(); ctx.arc(dx - size, dy, rad, 0, Math.PI * 2); ctx.fill(); }
+      }
+    }
+    // terracotta rim band (canvas top row = lip of the mug)
+    ctx.fillStyle = '#c98146';
+    ctx.fillRect(0, 0, size, 30);
+    var tex = canvasTexture(c);
+    return { map: tex, normalMap: normalFromHeight(hArr, size, 1.2) };
+  }
+
+  // Latte surface: marbled crema, soft-poured rosetta, micro bubbles at the rim
+  function latteTexture() {
+    var size = 512, n = makeNoise(31);
+    var c = document.createElement('canvas');
+    c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    // marbled crema base
+    var img = ctx.createImageData(size, size);
+    for (var y = 0; y < size; y++) {
+      for (var x = 0; x < size; x++) {
+        var dx = (x - 256) / 256, dy = (y - 256) / 256;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var swirl = n.fbm(x / 70 + dist * 2.5, y / 70, 4) * 0.5 + 0.5;
+        var base = 1 - dist * 0.35;
+        var rr = 201 * base * (0.92 + swirl * 0.18);
+        var gg = 129 * base * (0.9 + swirl * 0.2);
+        var bb = 70 * base * (0.88 + swirl * 0.2);
+        var i = (y * size + x) * 4;
+        img.data[i] = rr; img.data[i + 1] = gg; img.data[i + 2] = bb; img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    // rosetta poured with soft edges
+    ctx.filter = 'blur(2px)';
+    ctx.fillStyle = 'rgba(247,232,210,0.95)';
+    var cx = 256, top = 120, bottom = 392, leaves = 7;
+    for (var j = 0; j < leaves; j++) {
+      var yy = top + (bottom - top - 60) * (j / leaves);
+      var w = 95 * Math.sin(0.35 + (j / leaves) * 2.2);
+      ctx.beginPath();
+      ctx.moveTo(cx, yy);
+      ctx.quadraticCurveTo(cx - w, yy + 26, cx, yy + 58);
+      ctx.quadraticCurveTo(cx + w, yy + 26, cx, yy);
+      ctx.fill();
+    }
+    // heart tip
+    ctx.beginPath();
+    ctx.arc(cx - 14, bottom - 36, 20, 0, Math.PI * 2);
+    ctx.arc(cx + 14, bottom - 36, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx - 26, bottom - 28); ctx.lineTo(cx, bottom + 6); ctx.lineTo(cx + 26, bottom - 28);
+    ctx.fill();
+    // pull-through line
+    ctx.filter = 'blur(1px)';
+    ctx.strokeStyle = 'rgba(176,108,54,0.85)';
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(cx, top - 14); ctx.lineTo(cx, bottom - 2);
+    ctx.stroke();
+    // micro bubbles near the rim
+    ctx.filter = 'none';
+    for (var b = 0; b < 110; b++) {
+      var a = Math.random() * Math.PI * 2;
+      var rad = 210 + Math.random() * 38;
+      ctx.fillStyle = 'rgba(255,246,232,' + (0.08 + Math.random() * 0.16).toFixed(2) + ')';
+      ctx.beginPath();
+      ctx.arc(256 + Math.cos(a) * rad, 256 + Math.sin(a) * rad, 0.8 + Math.random() * 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return new THREE.CanvasTexture(c);
+  }
+
+  /* ---------- Studio environment (reflections) ---------- */
+
+  function buildEnvironment(renderer) {
+    var pmrem = new THREE.PMREMGenerator(renderer);
+    var sc = new THREE.Scene();
+    sc.background = new THREE.Color(0x8c8174);
+    function panel(color, intensity, x, y, z, w, h) {
+      var m = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, h),
+        new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(intensity) })
+      );
+      m.position.set(x, y, z);
+      m.lookAt(0, 0, 0);
+      sc.add(m);
+    }
+    panel(0xffffff, 5.0, 0, 8, 2, 8, 4);     // big softbox above
+    panel(0xfdf0dd, 2.4, -7, 2, 4, 5, 6);    // warm fill left
+    panel(0xc9d2b0, 1.6, 7, 1, -2, 4, 6);    // sage bounce right
+    panel(0xfdf0dd, 1.2, 0, -1, -8, 8, 4);   // back glow
+    var tex = pmrem.fromScene(sc).texture;
+    pmrem.dispose();
+    return tex;
+  }
+
+  /* ---------- Stage ---------- */
+
+  function createStage(containerId, buildObject, animate) {
+    var container = document.getElementById(containerId);
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 50);
+    camera.position.set(0, 0.9, 7);
+    camera.lookAt(0, 0, 0);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    container.appendChild(renderer.domElement);
+
+    scene.environment = buildEnvironment(renderer);
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0xfdf0dd, 0.35));
+
+    var key = new THREE.DirectionalLight(0xfff6e8, 0.9);
+    key.position.set(3, 5, 4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.left = -4; key.shadow.camera.right = 4;
+    key.shadow.camera.top = 4;   key.shadow.camera.bottom = -4;
+    key.shadow.radius = 8;
+    key.shadow.bias = -0.0005;
+    scene.add(key);
+
+    var rim = new THREE.DirectionalLight(0xfdf0dd, 0.4);
+    rim.position.set(-4, 2, -3);
+    scene.add(rim);
+
+    var object = buildObject();
+    object.traverse(function (n) { if (n.isMesh) { n.castShadow = true; } });
+    scene.add(object);
+
+    function resize() {
+      var w = container.clientWidth, h = container.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    var clock = new THREE.Clock();
+    (function loop() {
+      requestAnimationFrame(loop);
+      animate(object, clock.getElapsedTime());
+      renderer.render(scene, camera);
+    })();
+  }
+
+  /* ---------- Objects ---------- */
+
+  function buildArrow() {
+    var s = new THREE.Shape();
+    s.moveTo(-1.5, 0.34);
+    s.lineTo(0.15, 0.34);
+    s.lineTo(0.15, 0.78);
+    s.lineTo(1.55, 0);
+    s.lineTo(0.15, -0.78);
+    s.lineTo(0.15, -0.34);
+    s.lineTo(-1.5, -0.34);
+    s.closePath();
+    var geo = new THREE.ExtrudeGeometry(s, {
+      depth: 0.4, bevelEnabled: true, bevelThickness: 0.16,
+      bevelSize: 0.13, bevelSegments: 10, curveSegments: 16
+    });
+    geo.center();
+    var glaze = makeGlazeMaps([164, 80, 36], 0.07, 3.5, 5);
+    var mat = new THREE.MeshPhysicalMaterial({
+      map: glaze.map, normalMap: glaze.normalMap,
+      normalScale: new THREE.Vector2(0.35, 0.35),
+      roughness: 0.2, metalness: 0.0,
+      clearcoat: 1.0, clearcoatRoughness: 0.12,
+      envMapIntensity: 1.1
+    });
+    var mesh = new THREE.Mesh(geo, mat);
+    var g = new THREE.Group();
+    g.add(mesh);
+    g.scale.setScalar(1.05);
+    return g;
+  }
+
+  function buildVase() {
+    // Smooth thrown-clay profile via Catmull-Rom, with subtle throwing ridges
+    var ctrl = [
+      [0.015, 0], [0.5, 0.02], [0.68, 0.18], [0.62, 0.5], [0.45, 0.9],
+      [0.4, 1.2], [0.5, 1.5], [0.58, 1.68], [0.5, 1.78], [0.43, 1.76]
+    ].map(function (p) { return new THREE.Vector3(p[0], p[1], 0); });
+    var curve = new THREE.CatmullRomCurve3(ctrl);
+    var pts = [];
+    for (var i = 0; i <= 80; i++) {
+      var p = curve.getPoint(i / 80);
+      var x = p.x;
+      if (p.y > 0.18 && p.y < 1.45) x += 0.009 * Math.sin(p.y * 42);  // wheel ridges
+      pts.push(new THREE.Vector2(Math.max(x, 0.012), p.y));
+    }
+    var geo = new THREE.LatheGeometry(pts, 96);
+    var clay = makeClayMaps();
+    var mat = new THREE.MeshPhysicalMaterial({
+      map: clay.map, normalMap: clay.normalMap,
+      normalScale: new THREE.Vector2(0.9, 0.9),
+      roughnessMap: clay.roughnessMap, roughness: 1.0, metalness: 0.0,
+      clearcoat: 0.25, clearcoatRoughness: 0.5,
+      envMapIntensity: 0.7
+    });
+    var mesh = new THREE.Mesh(geo, mat);
+    mesh.position.y = -1.4;
+    mesh.scale.setScalar(1.5);
+
+    // darker glaze dip on the neck
+    var glaze = new THREE.MeshPhysicalMaterial({
+      color: 0x65402d, roughness: 0.15, clearcoat: 1.0,
+      clearcoatRoughness: 0.1, envMapIntensity: 1.2
+    });
+    var lipPts = [];
+    for (var j = 64; j <= 80; j++) {
+      var q = curve.getPoint(j / 80);
+      lipPts.push(new THREE.Vector2(q.x + 0.012, q.y));
+    }
+    var lip = new THREE.Mesh(new THREE.LatheGeometry(lipPts, 96), glaze);
+    lip.position.y = -1.4;
+    lip.scale.setScalar(1.5);
+
+    var g = new THREE.Group();
+    g.add(mesh); g.add(lip);
+    return g;
+  }
+
+  function buildBrush() {
+    var g = new THREE.Group();
+
+    // Curved wooden handle (lathe profile with belly and neck)
+    var handleProfile = [
+      [0.015, 0], [0.09, 0.01], [0.115, 0.12], [0.15, 0.6], [0.155, 0.95],
+      [0.12, 1.35], [0.085, 1.6], [0.08, 1.78], [0.095, 1.92], [0.1, 2.0]
+    ].map(function (p) { return new THREE.Vector2(p[0], p[1]); });
+    var woodMaps = makeWoodMaps();
+    var wood = new THREE.MeshPhysicalMaterial({
+      map: woodMaps.map, normalMap: woodMaps.normalMap,
+      normalScale: new THREE.Vector2(0.5, 0.5),
+      roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.15,
+      envMapIntensity: 0.9
+    });
+    var handle = new THREE.Mesh(new THREE.LatheGeometry(handleProfile, 48), wood);
+    handle.position.y = -1.95;
+    g.add(handle);
+
+    // Brushed-metal ferrule with crimp rings
+    var metal = new THREE.MeshStandardMaterial({
+      color: 0xcfc4ae, roughness: 0.24, metalness: 0.95, envMapIntensity: 1.3
+    });
+    var ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.125, 0.55, 32), metal);
+    ferrule.position.y = 0.31;
+    g.add(ferrule);
+    [0.12, 0.2].forEach(function (y) {
+      var crimp = new THREE.Mesh(new THREE.TorusGeometry(0.124, 0.008, 10, 40), metal);
+      crimp.rotation.x = Math.PI / 2;
+      crimp.position.y = y;
+      g.add(crimp);
+    });
+
+    // Individual bristles
+    var bristleColors = [0xf3e2c7, 0xe9d5b5, 0xfdf0dd];
+    for (var i = 0; i < 90; i++) {
+      var r = Math.sqrt(Math.random()) * 0.095;
+      var a = Math.random() * Math.PI * 2;
+      var h = 0.55 + Math.random() * 0.22;
+      var bm = new THREE.MeshStandardMaterial({
+        color: bristleColors[i % 3], roughness: 0.9
+      });
+      var b = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.011, h, 5), bm);
+      b.position.set(Math.cos(a) * r, 0.58 + h / 2, Math.sin(a) * r);
+      b.rotation.x = Math.sin(a) * r * 1.6;
+      b.rotation.z = -Math.cos(a) * r * 1.6;
+      g.add(b);
+    }
+
+    // Wet sage paint loaded on the tip
+    var paintMat = new THREE.MeshPhysicalMaterial({
+      color: 0xafb68c, roughness: 0.12, clearcoat: 1.0,
+      clearcoatRoughness: 0.05, envMapIntensity: 1.2
+    });
+    for (var k = 0; k < 22; k++) {
+      var pr = Math.random() * 0.07;
+      var pa = Math.random() * Math.PI * 2;
+      var blob = new THREE.Mesh(new THREE.SphereGeometry(0.025 + Math.random() * 0.035, 16, 12), paintMat);
+      blob.position.set(Math.cos(pa) * pr, 1.18 + Math.random() * 0.2, Math.sin(pa) * pr);
+      blob.scale.y = 1.4 + Math.random();
+      g.add(blob);
+    }
+    var drip = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 12), paintMat);
+    drip.scale.set(0.7, 2.2, 0.7);
+    drip.position.set(0.04, 1.08, 0.05);
+    g.add(drip);
+
+    g.rotation.z = 0.55;
+    g.scale.setScalar(0.92);
+    var outer = new THREE.Group();
+    outer.add(g);
+    return outer;
+  }
+
+  function buildCup() {
+    var g = new THREE.Group();
+
+    var mug = makeMugMaps();
+    var ceramic = new THREE.MeshPhysicalMaterial({
+      map: mug.map, normalMap: mug.normalMap,
+      normalScale: new THREE.Vector2(0.25, 0.25),
+      roughness: 0.2, clearcoat: 1.0, clearcoatRoughness: 0.08,
+      envMapIntensity: 1.0
+    });
+
+    // Cozy mug: rounded bottom, gently tapering straight walls, soft lip
+    var mugPts = [
+      [0.015, 0.02], [0.42, 0.02], [0.52, 0.06], [0.57, 0.16], [0.6, 0.5],
+      [0.61, 0.95], [0.62, 1.1], [0.6, 1.14], [0.56, 1.1], [0.55, 0.92]
+    ].map(function (p) { return new THREE.Vector2(p[0], p[1]); });
+    var body = new THREE.Mesh(new THREE.LatheGeometry(mugPts, 80), ceramic);
+    g.add(body);
+
+    // Sage handle: chunky oval loop
+    var handleMat = new THREE.MeshPhysicalMaterial({
+      color: 0xafb68c, roughness: 0.2, clearcoat: 1.0, clearcoatRoughness: 0.08,
+      envMapIntensity: 1.0
+    });
+    var handle = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.075, 20, 48), handleMat);
+    handle.position.set(0.66, 0.58, 0);
+    handle.scale.set(0.8, 1.2, 1);
+    g.add(handle);
+
+    // Latte surface with poured rosetta art
+    var latte = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.555, 0.555, 0.02, 64),
+      new THREE.MeshStandardMaterial({ map: latteTexture(), roughness: 0.45 })
+    );
+    latte.position.y = 1.0;
+    g.add(latte);
+
+    g.position.y = -0.85;
+    g.scale.setScalar(1.45);
+    var outer = new THREE.Group();
+    outer.add(g);
+    return outer;
+  }
+
+  /* ---------- Animations (smooth idle loops) ---------- */
+
+  createStage('stage-arrow', buildArrow, function (o, t) {
+    o.rotation.y = Math.sin(t * 1.1) * 0.5;
+    o.rotation.x = Math.sin(t * 0.9 + 1.2) * 0.16;
+    o.rotation.z = Math.sin(t * 0.7) * 0.07;
+    o.position.y = Math.sin(t * 1.3) * 0.12;
+  });
+
+  createStage('stage-vase', buildVase, function (o, t) {
+    o.rotation.y = t * 0.6;
+    o.rotation.z = Math.sin(t * 0.8) * 0.06;
+    o.position.y = Math.sin(t * 1.1) * 0.09;
+  });
+
+  createStage('stage-brush', buildBrush, function (o, t) {
+    o.rotation.y = t * 0.7;
+    o.position.y = Math.sin(t * 1.2) * 0.1;
+    o.rotation.x = Math.sin(t * 0.9) * 0.05;
+  });
+
+  createStage('stage-cup', buildCup, function (o, t) {
+    o.rotation.y = Math.sin(t * 0.8) * 0.7;
+    o.rotation.x = Math.sin(t * 0.6 + 0.8) * 0.08;
+    o.position.y = Math.sin(t * 1.15) * 0.08;
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make it. Paint it. Take it home.</title>
+<meta name="description" content="A creative art studio in Jordan. Paint canvases, pottery and tote bags, shape clay, and more — a relaxed space for self-expression. Walk-ins, gifts and private events.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mirza:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Approved brand fonts only: Alta, Mirza, Feeling Passionate ===== */
+@font-face{font-family:'Alta';src:url('assets/fonts/Alta-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Alta';src:url('assets/fonts/Alta-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Feeling Passionate';src:url('assets/fonts/FeelingPassionate.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+
+:root{
+  --olive:#7A7E5D; --sage:#AFB68C; --rust:#A45024; --terracotta:#C98146;
+  --brown:#65402D; --mauve:#805B52; --beige:#E0D3C0; --cream:#FDF0DD;
+  /* aliases so the navbar + loader (from index_backup_20260611) render verbatim */
+  --olive-green:#7A7E5D; --sage-green:#AFB68C; --rust-orange:#A45024;
+  --dark-brown:#65402D; --mauve-brown:#805B52; --warm-beige:#E0D3C0;
+  --display:'Alta','Mirza',serif;
+  --body:'Mirza',serif;
+  --script:'Feeling Passionate',cursive;
+  --maxw:1180px;
+  --shadow:4px 6px 14px rgba(101,64,45,.28);
+}
+
+/* ---------------- LOADING SCREEN (from index_backup_20260611) ---------------- */
+#loader{
+  position:fixed;top:0;left:0;
+  width:100vw;height:100vh;height:100dvh;z-index:9999;
+  display:grid;place-items:center;
+  background:var(--cream);
+  transition:opacity .8s ease, visibility .8s ease;
+}
+#loader.hidden{opacity:0;visibility:hidden}
+#loader .logo-wrap{width:200px;height:200px;animation:floaty 2.4s ease-in-out infinite}
+#loader .logo-color{
+  width:100%;height:100%;
+  background-color:var(--olive-green);
+  -webkit-mask:url('assets/logo-black.png') center/contain no-repeat;
+          mask:url('assets/logo-black.png') center/contain no-repeat;
+  filter:drop-shadow(0 2px 3px rgba(101,64,45,.25));
+  animation:hue 1.5s linear forwards;
+}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes hue{
+  0%{background:var(--olive-green)}
+  25%{background:var(--sage-green)}
+  50%{background:var(--rust-orange)}
+  75%{background:var(--terracotta)}
+  100%{background:var(--olive-green)}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body);
+  color:var(--brown);
+  background:var(--cream);
+  background-image:
+    radial-gradient(rgba(101,64,45,.045) 1px, transparent 1.4px),
+    radial-gradient(rgba(122,126,93,.05) 1px, transparent 1.4px);
+  background-size:9px 9px, 13px 13px;
+  background-position:0 0, 4px 7px;
+  overflow-x:hidden;
+  font-size:18px;
+  line-height:1.55;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+/* ================= collage utilities ================= */
+.tape{
+  position:absolute;width:110px;height:34px;
+  background:rgba(224,211,192,.78);
+  border-left:2px dashed rgba(253,240,221,.7);
+  border-right:2px dashed rgba(253,240,221,.7);
+  box-shadow:0 2px 5px rgba(101,64,45,.18);
+  opacity:.92;z-index:5;pointer-events:none;
+}
+.tape.t-l{top:-15px;left:-34px;transform:rotate(-38deg)}
+.tape.t-r{top:-15px;right:-34px;transform:rotate(36deg)}
+.tape.t-c{top:-17px;left:50%;transform:translateX(-50%) rotate(-3deg)}
+.tape.t-b{bottom:-15px;right:-30px;transform:rotate(-40deg)}
+.tape.olive{background:rgba(175,182,140,.72)}
+.tape.terra{background:rgba(201,129,70,.6)}
+
+.cut-photo{
+  background:#fff;
+  padding:10px 10px 12px;
+  box-shadow:var(--shadow);
+  position:relative;
+  /* sticker cut-out edge */
+  clip-path:polygon(2% 1%, 14% 0%, 27% 2%, 41% 0%, 55% 2%, 70% 0%, 84% 2%, 98% 0%, 100% 12%, 98% 26%, 100% 41%, 98% 57%, 100% 72%, 98% 87%, 100% 99%, 86% 98%, 71% 100%, 56% 98%, 41% 100%, 26% 98%, 12% 100%, 0% 98%, 2% 84%, 0% 69%, 2% 54%, 0% 39%, 2% 24%, 0% 10%);
+}
+.cut-photo img{width:100%;height:100%;object-fit:cover}
+
+.scrap{
+  display:inline-block;position:relative;
+  padding:.06em .28em .02em;
+  clip-path:polygon(1% 8%, 12% 0%, 38% 4%, 64% 0%, 88% 5%, 100% 2%, 99% 38%, 100% 68%, 97% 96%, 72% 100%, 45% 95%, 18% 100%, 0% 94%, 2% 60%, 0% 30%);
+  box-shadow:3px 4px 8px rgba(101,64,45,.22);
+}
+.scrap.s-rust{background:var(--rust);color:var(--cream)}
+.scrap.s-olive{background:var(--olive);color:var(--cream)}
+.scrap.s-sage{background:var(--sage);color:var(--brown)}
+.scrap.s-terra{background:var(--terracotta);color:var(--cream)}
+.scrap.s-beige{background:var(--beige);color:var(--brown)}
+.scrap.s-cream{background:#fff;color:var(--brown)}
+.scrap.s-mauve{background:var(--mauve);color:var(--cream)}
+.scrap.s-brown{background:var(--brown);color:var(--cream)}
+
+.r-1{transform:rotate(-2.4deg)} .r-2{transform:rotate(1.8deg)} .r-3{transform:rotate(-1.2deg)}
+.r-4{transform:rotate(2.6deg)} .r-5{transform:rotate(-3.2deg)} .r-6{transform:rotate(.9deg)}
+
+/* torn paper section panels */
+.torn{
+  position:relative;
+  background:var(--beige);
+  clip-path:polygon(0% 1.2%, 4% 0%, 9% 1%, 15% .2%, 22% 1.3%, 30% .3%, 38% 1.1%, 46% .2%, 54% 1.2%, 62% .3%, 70% 1.2%, 78% .2%, 86% 1.1%, 93% .3%, 100% 1.2%, 100% 98.8%, 96% 100%, 90% 99%, 83% 99.8%, 75% 98.9%, 67% 99.8%, 59% 98.9%, 51% 99.8%, 43% 98.9%, 35% 99.8%, 27% 98.9%, 19% 99.8%, 11% 98.9%, 4% 99.8%, 0% 98.8%);
+}
+.torn.white{background:#fffdf8}
+.torn.sagebg{background:var(--sage)}
+.torn.olivebg{background:var(--olive);color:var(--cream)}
+.torn.brownbg{background:var(--brown);color:var(--cream)}
+
+.doodle{position:absolute;pointer-events:none;opacity:.85}
+
+/* ================= ransom headline ================= */
+.ransom{font-family:var(--display);letter-spacing:.04em;line-height:1.28;text-transform:uppercase}
+.ransom .scrap{margin:.07em .1em}
+
+/* ================= nav (from index_backup_20260611) ================= */
+header{position:sticky;top:0;z-index:200;background:var(--cream)}
+header.scrolled{border-bottom:1px solid var(--warm-beige)}
+nav{position:relative;max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:center;padding:0.7rem 1.6rem}
+.nav-brand{position:relative;flex:0 0 auto;width:150px;height:40px;margin:0 60px}
+/* connected scoop shape at the nav bottom (from nav.svg) */
+.nav-scoop{position:absolute;left:calc(50% - 75px);top:0;
+  transform-origin:top center;
+  width:150px;height:115px;background:var(--cream);
+  -webkit-clip-path:path('M1.2,0 L1.2,59 c9.8,0,18.4,6.4,21.5,15.7,7.2,21.4,27.5,36.5,50.9,36.7,23.6.1,44.1-15,51.4-36.6,3.2-9.4,11.8-15.8,21.7-15.8 L146.8,0 Z');
+          clip-path:path('M1.2,0 L1.2,59 c9.8,0,18.4,6.4,21.5,15.7,7.2,21.4,27.5,36.5,50.9,36.7,23.6.1,44.1-15,51.4-36.6,3.2-9.4,11.8-15.8,21.7-15.8 L146.8,0 Z');
+  pointer-events:none;z-index:0;
+  transition:transform .55s cubic-bezier(0.22, 1, 0.36, 1)}
+header.scrolled .nav-scoop{transform:scaleY(0)}
+/* cream circle behind the logo, larger than the bar, bulging onto the hero */
+.nav-brand img{position:absolute;left:50%;top:50%;transform:translate(-50%, -50%) translateY(27px);height:64px;width:auto;z-index:1;transition:height .55s cubic-bezier(0.22, 1, 0.36, 1), transform .55s cubic-bezier(0.22, 1, 0.36, 1)}
+header.scrolled .nav-brand img{height:38px;transform:translate(-50%, -50%) translateY(0)}
+nav ul{list-style:none}
+
+/* inline split links (wide screens) */
+.nav-side{flex:1 1 0;display:flex;flex-wrap:wrap;align-items:center;gap:0.7rem 1.3rem}
+.nav-left{justify-content:flex-end}
+.nav-right{justify-content:flex-start}
+.nav-side a{position:relative}
+.nav-side a::after{content:'';position:absolute;left:0;bottom:-4px;width:0;height:2px;background:var(--terracotta);transition:width .25s}
+.nav-side a:hover{color:var(--rust-orange)}
+.nav-side a:hover::after{width:100%}
+
+/* hamburger button (left of centered logo) */
+.nav-toggle{position:absolute;left:1.3rem;top:50%;transform:translateY(-50%);
+  width:30px;height:22px;padding:0;background:none;border:0;cursor:pointer;
+  display:none;flex-direction:column;justify-content:space-between}
+.nav-toggle span{display:block;width:100%;height:3px;border-radius:2px;
+  background:var(--rust-orange);transition:transform .3s, opacity .3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(9.5px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-9.5px) rotate(-45deg)}
+
+/* dropdown menu */
+.nav-menu{position:absolute;top:100%;left:0;right:0;
+  background:var(--cream);
+  list-style:none;display:none;flex-direction:column;align-items:stretch;
+  max-height:0;overflow:hidden;transition:max-height .35s ease;
+  box-shadow:0 12px 22px rgba(101,64,45,0.14)}
+.nav-menu.open{max-height:460px;border-bottom:1px solid var(--warm-beige)}
+.nav-menu li{width:100%;border-top:1px solid var(--warm-beige)}
+.nav-menu li:first-child{border-top:0}
+.nav-menu a{display:block;text-align:center;padding:0.95rem 1rem;
+  color:var(--olive-green);font-size:1.05rem;letter-spacing:0.5px;transition:background .2s, color .2s}
+.nav-menu a:hover{background:var(--warm-beige);color:var(--rust-orange)}
+nav a{text-decoration:none;color:var(--olive-green);font-size:1.05rem;letter-spacing:0.5px;position:relative;transition:color .25s}
+
+/* ================= hero ================= */
+.hero{padding:64px 0 30px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center;position:relative}
+.hero h1{font-size:clamp(2rem, 5.2vw, 3.9rem);margin-bottom:.35em}
+.hero .script{
+  font-family:var(--script);font-size:clamp(1.6rem,3.4vw,2.6rem);
+  color:var(--rust);transform:rotate(-2deg);display:inline-block;margin:.2em 0 .5em;
+}
+.hero p.lead{max-width:46ch;font-size:1.1rem;background:rgba(255,253,248,.75);padding:.5em .8em;clip-path:polygon(0% 6%, 3% 0%, 97% 2%, 100% 0%, 99% 94%, 96% 100%, 3% 98%, 0% 100%);transform:rotate(-.4deg);box-shadow:2px 3px 8px rgba(101,64,45,.12)}
+.btn{
+  display:inline-block;font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;
+  font-size:.95rem;padding:.75em 1.5em .55em;margin:1.1em .5em 0 0;position:relative;
+  clip-path:polygon(2% 14%, 22% 2%, 52% 8%, 79% 0%, 100% 8%, 98% 86%, 76% 100%, 48% 92%, 20% 100%, 0% 92%);
+  box-shadow:var(--shadow);cursor:pointer;transition:transform .25s;
+}
+.btn:hover{transform:rotate(-1.6deg) scale(1.04)}
+.btn-rust{background:var(--rust);color:var(--cream);transform:rotate(-1deg)}
+.btn-sage{background:var(--sage);color:var(--brown);transform:rotate(1.4deg)}
+.hero-art{position:relative;min-height:430px}
+/* curved window panel behind the figure (single palette color) */
+.hero-art .window{
+  position:absolute;top:24px;right:16%;
+  width:50%;height:63%;
+  background:var(--sage);
+  border-radius:48% 48% 16px 16px;
+  box-shadow:var(--shadow);
+  transform:rotate(2deg);
+  z-index:1;
+}
+.hero-art .main-cut{width:78%;position:absolute;top:0;right:4%;transform:rotate(3deg);z-index:3}
+.hero-art .main-cut img{filter:drop-shadow(8px 10px 14px rgba(101,64,45,.35))}
+.hero-art .side-cut{width:46%;position:absolute;bottom:-10px;left:0;transform:rotate(-6deg);z-index:2}
+.hero-art .chip{
+  position:absolute;font-family:var(--script);font-size:1.5rem;z-index:6;
+}
+.hero-art .chip.c1{top:-14px;left:6%;color:var(--olive);transform:rotate(-8deg);font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:1.02rem}
+.hero-art .chip.c2{bottom:24%;right:-6px;color:var(--rust);transform:rotate(6deg)}
+.mini-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:54px;justify-content:center}
+.mini{
+  font-family:var(--display);text-transform:uppercase;font-size:.85rem;letter-spacing:.1em;
+  padding:.6em 1.1em .4em;box-shadow:3px 4px 8px rgba(101,64,45,.2);
+  clip-path:polygon(3% 12%, 28% 0%, 65% 6%, 100% 0%, 97% 88%, 70% 100%, 32% 90%, 0% 100%);
+}
+.mini:nth-child(1){background:var(--sage);color:var(--brown);transform:rotate(-2deg)}
+.mini:nth-child(2){background:var(--terracotta);color:var(--cream);transform:rotate(1.6deg)}
+.mini:nth-child(3){background:var(--beige);color:var(--brown);transform:rotate(-1.2deg)}
+.mini:nth-child(4){background:var(--olive);color:var(--cream);transform:rotate(2.2deg)}
+
+/* ================= sections ================= */
+.sec{padding:58px 0 30px;position:relative}
+.sec-head{text-align:center;margin-bottom:40px;position:relative}
+.sec-head h2{font-size:clamp(1.5rem,3.6vw,2.5rem);margin-bottom:.5em}
+.sec-head .sub{
+  font-family:var(--script);font-size:1.55rem;color:var(--mauve);
+  display:inline-block;transform:rotate(-1.6deg);
+}
+
+/* service overview cards */
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.svc{
+  background:#fffdf8;padding:14px 14px 18px;text-align:center;position:relative;
+  box-shadow:var(--shadow);
+  clip-path:polygon(1% 3%, 25% 0%, 50% 2%, 76% 0%, 99% 2%, 100% 26%, 98% 51%, 100% 75%, 99% 98%, 74% 100%, 49% 97%, 25% 100%, 1% 98%, 0% 74%, 2% 49%, 0% 25%);
+  transition:transform .3s;
+}
+.svc:hover{transform:rotate(0deg) scale(1.04)!important}
+.svc:nth-child(1){transform:rotate(-1.8deg)}
+.svc:nth-child(2){transform:rotate(1.4deg)}
+.svc:nth-child(3){transform:rotate(-1deg)}
+.svc:nth-child(4){transform:rotate(2deg)}
+.svc img{height:150px;width:100%;object-fit:cover;margin-bottom:12px}
+.svc h3{font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:1.02rem}
+.svc .num{
+  position:absolute;top:-14px;left:-10px;font-family:var(--script);font-size:1.7rem;color:var(--cream);
+  background:var(--rust);width:46px;height:46px;display:grid;place-items:center;
+  clip-path:polygon(50% 0%, 65% 12%, 82% 8%, 88% 25%, 100% 35%, 94% 52%, 100% 68%, 86% 76%, 82% 93%, 64% 89%, 50% 100%, 36% 89%, 18% 93%, 14% 76%, 0% 68%, 6% 52%, 0% 35%, 12% 25%, 18% 8%, 35% 12%);
+  transform:rotate(-10deg);z-index:4;
+}
+.svc:nth-child(2) .num{background:var(--olive)}
+.svc:nth-child(3) .num{background:var(--terracotta)}
+.svc:nth-child(4) .num{background:var(--mauve)}
+
+/* price list panels */
+.panel{
+  padding:46px 40px 50px;margin-bottom:54px;
+}
+.panel-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:42px;align-items:center}
+.panel-grid.flip{grid-template-columns:1.1fr .9fr}
+.panel-grid.flip .panel-photo{order:2}
+.panel-photo{position:relative}
+.panel-photo .cut-photo{transform:rotate(-2.4deg)}
+.panel-grid.flip .panel-photo .cut-photo{transform:rotate(2.2deg)}
+.panel-photo img{height:330px}
+.price-list{list-style:none}
+.price-list li{
+  background:#fffdf8;margin:0 0 16px;padding:14px 18px 10px;position:relative;
+  box-shadow:3px 4px 9px rgba(101,64,45,.16);
+  clip-path:polygon(0% 10%, 2% 0%, 34% 3%, 66% 0%, 98% 3%, 100% 12%, 99% 55%, 100% 90%, 97% 100%, 64% 96%, 33% 100%, 2% 97%, 0% 88%, 1% 50%);
+}
+.price-list li:nth-child(odd){transform:rotate(-.7deg)}
+.price-list li:nth-child(even){transform:rotate(.7deg)}
+.price-list .row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.price-list h4{font-family:var(--display);text-transform:uppercase;letter-spacing:.07em;font-size:1.02rem}
+.price-tag{
+  margin-left:auto;font-family:var(--display);font-size:.9rem;letter-spacing:.06em;
+  padding:.32em .75em .2em;position:relative;white-space:nowrap;
+  clip-path:polygon(14% 0%, 100% 4%, 97% 96%, 14% 100%, 0% 50%);
+  box-shadow:2px 3px 6px rgba(101,64,45,.25);
+  transform:rotate(2deg);
+}
+.tag-rust{background:var(--rust);color:var(--cream)}
+.tag-olive{background:var(--olive);color:var(--cream)}
+.tag-terra{background:var(--terracotta);color:var(--cream)}
+.tag-mauve{background:var(--mauve);color:var(--cream)}
+.price-list p{font-size:.95rem;color:var(--mauve);margin-top:2px}
+.extra{
+  font-family:var(--script);font-size:1.15rem;color:var(--rust);display:inline-block;transform:rotate(-1.4deg);margin-top:4px;
+}
+
+/* pottery grid (6 items) */
+.pots{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pots li{margin-bottom:0}
+
+/* also available */
+.also-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.also{
+  padding:22px 18px 26px;text-align:center;position:relative;box-shadow:var(--shadow);
+  clip-path:polygon(2% 4%, 30% 0%, 60% 3%, 97% 0%, 100% 30%, 97% 62%, 100% 96%, 68% 100%, 36% 96%, 2% 100%, 0% 65%, 3% 32%);
+}
+.also h3{font-family:var(--display);text-transform:uppercase;font-size:1rem;letter-spacing:.08em;margin-bottom:.5em}
+.also p{font-size:.92rem}
+.also:nth-child(1){background:var(--sage);color:var(--brown);transform:rotate(-1.6deg)}
+.also:nth-child(2){background:var(--beige);color:var(--brown);transform:rotate(1.2deg)}
+.also:nth-child(3){background:var(--terracotta);color:var(--cream);transform:rotate(-1deg)}
+.also:nth-child(4){background:var(--mauve);color:var(--cream);transform:rotate(1.8deg)}
+
+/* events */
+.events-panel{padding:54px 46px 60px}
+.events-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+.events-panel h2{font-size:clamp(1.4rem,3.2vw,2.2rem)}
+.events-panel .script-line{font-family:var(--script);font-size:1.7rem;color:var(--beige);transform:rotate(-1.8deg);display:inline-block;margin:.3em 0 .7em}
+.events-panel p{margin-bottom:1em}
+.note-card{
+  background:var(--cream);color:var(--brown);padding:22px 24px;position:relative;
+  box-shadow:var(--shadow);transform:rotate(1.6deg);
+  clip-path:polygon(1% 4%, 33% 0%, 66% 3%, 99% 0%, 100% 33%, 97% 66%, 100% 98%, 67% 100%, 34% 97%, 1% 100%, 0% 66%, 2% 33%);
+}
+.note-card .hl{font-family:var(--script);color:var(--rust);font-size:1.3rem}
+
+/* book strip */
+.book-strip{text-align:center;padding:70px 0 80px;position:relative}
+.book-strip .script-big{font-family:var(--script);font-size:clamp(1.9rem,4.5vw,3.2rem);color:var(--rust);display:inline-block;transform:rotate(-2deg);margin-bottom:.4em}
+
+/* footer */
+footer{padding:46px 0 40px;position:relative}
+.foot-panel{padding:40px 36px;text-align:center}
+.foot-panel img.flogo{height:74px;width:auto;margin:0 auto 14px;transform:rotate(-2deg)}
+.foot-panel p{font-size:.95rem}
+.foot-panel .script-line{font-family:var(--script);font-size:1.5rem;color:var(--sage);display:inline-block;transform:rotate(-1.6deg);margin-top:8px}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(26px)}
+.reveal.in{opacity:1;transform:translateY(0);transition:opacity .7s ease,transform .7s ease}
+
+/* doodle svg strokes */
+.stroke{fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ================= responsive ================= */
+@media(max-width:960px){
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+  .also-grid{grid-template-columns:repeat(2,1fr)}
+  .pots{grid-template-columns:repeat(2,1fr)}
+  .hero-grid{grid-template-columns:1fr}
+  /* hero collage: switch from absolute positions to a simple centered stack */
+  .hero-art{min-height:0;margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:20px}
+  .hero-art .window{left:50%;right:auto;top:6%;width:60%;height:70%;transform:translateX(-50%) rotate(2deg)}
+  .hero-art .main-cut{position:relative;width:82%;top:auto;right:auto;transform:rotate(2deg)}
+  .hero-art .side-cut{position:relative;width:64%;bottom:auto;left:auto;transform:rotate(-3deg)}
+  .hero-art .chip.c1{position:static;transform:rotate(-3deg);order:-1}
+  .hero-art .chip.c2{display:none}
+  .panel-grid,.panel-grid.flip{grid-template-columns:1fr}
+  .panel-grid.flip .panel-photo{order:0}
+  .events-grid{grid-template-columns:1fr}
+  /* nav: hide split links, show hamburger dropdown */
+  .nav-side{display:none}
+  .nav-toggle{display:flex}
+  .nav-menu{display:flex}
+  /* center everything on mobile */
+  .hero,.sec,.panel,.events-panel,.book-strip,footer{text-align:center}
+  .hero p.lead{margin-left:auto;margin-right:auto}
+  .price-list .row{justify-content:center}
+  .price-list .price-tag{margin-left:0}
+  .price-list li p,.extra{text-align:center}
+  .note-card{text-align:center}
+  .hero-art{margin-left:auto;margin-right:auto;max-width:420px}
+  .panel-photo .cut-photo{margin:0 auto;max-width:420px}
+  .events-grid .cut-photo{margin-left:auto;margin-right:auto;max-width:420px}
+}
+@media(max-width:560px){
+  .svc-grid{grid-template-columns:1fr}
+  .also-grid{grid-template-columns:1fr}
+  .pots{grid-template-columns:1fr}
+  .panel{padding:36px 20px 40px}
+  .events-panel{padding:40px 22px 46px}
+  body{font-size:17px}
+  .tape{width:80px;height:26px}
+  /* nav: compact hamburger on phones */
+  nav{padding:0.6rem 0.8rem}
+  .nav-brand{width:130px}
+  .nav-brand img{height:60px}
+  /* loader logo focal size on phones */
+  #loader .logo-wrap{width:168px;height:168px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN (from index_backup_20260611) -->
+<div id="loader">
+  <div class="logo-wrap"><div class="logo-color" role="img" aria-label="Artizen"></div></div>
+</div>
+
+<!-- ===== NAV (from index_backup_20260611) ===== -->
+<header>
+  <div class="nav-scoop"><svg viewBox="269 -59 148 114" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M270.2,-59L270.2,0c9.8,0,18.4,6.4,21.5,15.7,7.2,21.4,27.5,36.5,50.9,36.7,23.6.1,44.1-15,51.4-36.6,3.2-9.4,11.8-15.8,21.7-15.8L415.8,-59Z" fill="#FDF0DD"/></svg></div>
+  <nav>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-side nav-left">
+      <li><a href="#canvas">Canvas</a></li>
+      <li><a href="#fabric">Fabric</a></li>
+      <li><a href="#pottery">Pottery</a></li>
+      <li><a href="#clay">Clay</a></li>
+    </ul>
+    <a class="nav-brand" href="#top" aria-label="Artizen home">
+      <img src="assets/logo-black.png" alt="Artizen logo">
+    </a>
+    <ul class="nav-side nav-right">
+      <li><a href="#also">Studio Specials</a></li>
+      <li><a href="#events">Private Events</a></li>
+    </ul>
+    <ul class="nav-menu" id="navmenu">
+      <li><a href="#canvas">Canvas</a></li>
+      <li><a href="#fabric">Fabric</a></li>
+      <li><a href="#pottery">Pottery</a></li>
+      <li><a href="#clay">Clay</a></li>
+      <li><a href="#also">Studio Specials</a></li>
+      <li><a href="#events">Private Events</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="reveal">
+        <h1 class="ransom">
+          <span class="scrap s-rust r-1">Make it</span>
+          <span class="scrap s-olive r-2">Paint it</span>
+          <span class="scrap s-terra r-3">Take it home</span>
+        </h1>
+        <span class="script">a little mess, a lot of art</span>
+        <p class="lead">A relaxed creative studio in Jordan — paint canvases, pottery and tote bags, shape clay, and make something that's entirely yours. No experience needed.</p>
+        <div>
+          <a class="btn btn-rust" href="#book">Book a session</a>
+          <a class="btn btn-sage" href="#canvas">Explore services</a>
+        </div>
+      </div>
+      <div class="hero-art reveal">
+        <span class="window"></span>
+        <div class="main-cut">
+          <span class="tape t-c"></span>
+          <img src="assets/img/cutout-artist.png" alt="Artist holding a brush and a paint palette, cut out like a magazine clipping">
+        </div>
+        <span class="chip c1">cut, paste, create!</span>
+      </div>
+    </div>
+    <div class="mini-row">
+      <span class="mini reveal">Self-Expression</span>
+      <span class="mini reveal">Create</span>
+      <span class="mini reveal">Relax</span>
+      <span class="mini reveal">Coffee Corner</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES OVERVIEW ===== -->
+<section class="sec" id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2 class="ransom">
+        <span class="scrap s-rust r-2">Our Services</span>
+      </h2>
+      <span class="sub">pick your favourite mess</span>
+    </div>
+    <div class="svc-grid">
+      <a class="svc reveal" href="#canvas">
+        <span class="num">1</span>
+        <span class="tape t-c"></span>
+        <img src="assets/img/web-canvas.jpg" alt="Young artist painting on canvas at an easel" loading="lazy">
+        <h3>Canvas painting</h3>
+      </a>
+      <a class="svc reveal" href="#fabric">
+        <span class="num">2</span>
+        <span class="tape olive t-c"></span>
+        <img src="assets/img/web-fabric.jpg" alt="Painting a stencil design on a tote bag" loading="lazy">
+        <h3>Fabric painting</h3>
+      </a>
+      <a class="svc reveal" href="#pottery">
+        <span class="num">3</span>
+        <span class="tape terra t-c"></span>
+        <img src="assets/img/web-pottery.jpg" alt="Hand painted terracotta plates with leaf designs" loading="lazy">
+        <h3>Pottery painting</h3>
+      </a>
+      <a class="svc reveal" href="#clay">
+        <span class="num">4</span>
+        <span class="tape t-c"></span>
+        <img src="assets/img/web-clay2.jpg" alt="Hands shaping a clay vase" loading="lazy">
+        <h3>Clay</h3>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CANVAS ===== -->
+<section class="sec" id="canvas">
+  <div class="wrap">
+    <div class="panel torn white reveal">
+      <div class="sec-head">
+        <h2 class="ransom"><span class="scrap s-rust r-1">Canvas Painting</span></h2>
+        <span class="sub">paint it your way</span>
+      </div>
+      <div class="panel-grid">
+        <div class="panel-photo">
+          <div class="cut-photo">
+            <span class="tape t-l"></span><span class="tape olive t-b"></span>
+            <img src="assets/img/web-canvas.jpg" alt="Painting on canvas during an art class" loading="lazy">
+          </div>
+        </div>
+        <ul class="price-list">
+          <li>
+            <div class="row"><h4>Canvas 15x15</h4><span class="price-tag tag-rust">10 JDs</span></div>
+            <p>Paint your own mini canvas and create a small piece of art to take home.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Canvas 20x20</h4><span class="price-tag tag-olive">12 JDs</span></div>
+            <p>Design and paint a medium canvas with your own colors and style.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Canvas A4</h4><span class="price-tag tag-terra">15 JDs</span></div>
+            <p>Create a unique artwork on an A4 canvas and take home your finished painting.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FABRIC ===== -->
+<section class="sec" id="fabric">
+  <div class="wrap">
+    <div class="panel torn sagebg reveal">
+      <div class="sec-head">
+        <h2 class="ransom"><span class="scrap s-brown r-3">Fabric Painting</span></h2>
+        <span class="sub" style="color:var(--brown)">wear your art</span>
+      </div>
+      <div class="panel-grid flip">
+        <ul class="price-list">
+          <li>
+            <div class="row"><h4>Pouches</h4><span class="price-tag tag-rust">12 JDs</span></div>
+            <p>Paint and personalize your own fabric pouch using acrylics.</p>
+            <span class="extra">extra 3 patches: +2 JDs</span>
+          </li>
+          <li>
+            <div class="row"><h4>Mini tote bags</h4><span class="price-tag tag-mauve">15 JDs</span></div>
+            <p>Design and paint a mini tote bag with your own unique style.</p>
+            <span class="extra">extra 3 patches: +2 JDs</span>
+          </li>
+          <li>
+            <div class="row"><h4>Tote bags</h4><span class="price-tag tag-olive">18 JDs</span></div>
+            <p>Create and customize a full-size tote bag with your own artwork.</p>
+            <span class="extra">extra 3 patches: +2 JDs</span>
+          </li>
+        </ul>
+        <div class="panel-photo">
+          <div class="cut-photo">
+            <span class="tape terra t-r"></span><span class="tape t-b"></span>
+            <img src="assets/img/web-fabric.jpg" alt="Painting a design on a canvas tote bag" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== POTTERY ===== -->
+<section class="sec" id="pottery">
+  <div class="wrap">
+    <div class="panel torn white reveal">
+      <div class="sec-head">
+        <h2 class="ransom"><span class="scrap s-terra r-5">Pottery Painting</span></h2>
+        <span class="sub">glaze &amp; amaze</span>
+      </div>
+      <div class="panel-grid">
+        <div class="panel-photo">
+          <div class="cut-photo" style="background:transparent;box-shadow:none;clip-path:none;padding:0">
+            <img src="assets/img/cutout-vase.png" alt="Artist examining a hand painted vase, cut out like a magazine clipping" style="object-fit:contain;height:auto;filter:drop-shadow(8px 10px 14px rgba(101,64,45,.35))">
+          </div>
+        </div>
+        <ul class="price-list pots">
+          <li>
+            <div class="row"><h4>Mini vase</h4><span class="price-tag tag-rust">8 JDs</span></div>
+            <p>Paint and decorate a mini vase with your own creative design.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Teacup</h4><span class="price-tag tag-olive">12 JDs</span></div>
+            <p>Customize a teacup using colors and patterns you love.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Cup</h4><span class="price-tag tag-terra">12 JDs</span></div>
+            <p>Design and paint a cup with your own unique style.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Mug</h4><span class="price-tag tag-mauve">15 JDs</span></div>
+            <p>Create a personalized mug with your own artwork.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Plate</h4><span class="price-tag tag-rust">12 JDs</span></div>
+            <p>Paint and decorate a plate with a design of your choice.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Jug</h4><span class="price-tag tag-olive">18 JDs</span></div>
+            <p>Design and paint a jug with your own creative touch.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLAY ===== -->
+<section class="sec" id="clay">
+  <div class="wrap">
+    <div class="panel torn reveal">
+      <div class="sec-head">
+        <h2 class="ransom"><span class="scrap s-mauve r-1">Clay</span></h2>
+        <span class="sub">squish, shape, smile</span>
+      </div>
+      <div class="panel-grid flip">
+        <ul class="price-list">
+          <li>
+            <div class="row"><h4>Polymer clay keychains</h4><span class="price-tag tag-terra">18 JDs</span></div>
+            <p>Create and shape your own polymer clay keychain with fun colors and designs.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Polymer clay earrings</h4><span class="price-tag tag-rust">18 JDs</span></div>
+            <p>Design and craft a unique pair of polymer clay earrings.</p>
+          </li>
+          <li>
+            <div class="row"><h4>Air dry clay</h4><span class="price-tag tag-olive">25 JDs</span></div>
+            <p>Shape and create your own clay piece using air-dry clay and bring your idea to life.</p>
+          </li>
+        </ul>
+        <div class="panel-photo">
+          <div class="cut-photo">
+            <span class="tape olive t-l"></span><span class="tape t-r"></span>
+            <img src="assets/img/web-clay2.jpg" alt="Hands shaping an air-dry clay vase" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ALSO AVAILABLE ===== -->
+<section class="sec" id="also">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2 class="ransom"><span class="scrap s-olive r-2">Also Available</span></h2>
+      <span class="sub">studio specials</span>
+    </div>
+    <div class="also-grid">
+      <div class="also reveal">
+        <span class="tape t-c"></span>
+        <h3>Memory boxes</h3>
+        <p>Paint and personalize a memory box to store your special keepsakes.</p>
+      </div>
+      <div class="also reveal">
+        <span class="tape terra t-c"></span>
+        <h3>Cake decorating</h3>
+        <p>Decorate your own cake using colors and creative designs.</p>
+      </div>
+      <div class="also reveal">
+        <span class="tape t-c"></span>
+        <h3>Mirror painting</h3>
+        <p>Paint and decorate a mirror with your own unique patterns and artwork.</p>
+      </div>
+      <div class="also reveal">
+        <span class="tape olive t-c"></span>
+        <h3>Candle painting</h3>
+        <p>Customize and paint candles with creative colors and designs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRIVATE EVENTS ===== -->
+<section class="sec" id="events">
+  <div class="wrap">
+    <div class="events-panel torn olivebg reveal">
+      <div class="events-grid">
+        <div>
+          <h2 class="ransom"><span class="scrap s-cream r-4">Private Events</span></h2>
+          <span class="script-line">your party, but make it art</span>
+          <p>Celebrate your occasion at our studio with a private art session in a relaxed and creative environment.</p>
+          <p>Host a private gathering at our art space and enjoy a creative experience with your friends while making art together! You can select the activity that best suits your group.</p>
+          <a class="btn btn-rust" href="#book">Plan your event</a>
+        </div>
+        <div>
+          <div class="cut-photo" style="transform:rotate(2deg);margin-bottom:26px">
+            <span class="tape t-l"></span>
+            <img src="assets/img/web-pottery2.jpg" alt="Hand painted decorative plate" loading="lazy" style="height:200px">
+          </div>
+          <div class="note-card">
+            <span class="tape terra t-c"></span>
+            <p><span class="hl">3 JDs setup fee</span> per person applies for the event setup — a themed table arrangement in a color of your choice, with flowers, candles, table covers, and cake disposables!</p>
+            <p style="margin-bottom:0">Guests are welcome to bring their own food, and all bookings include access to the <span class="hl">coffee corner</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BOOK ===== -->
+<section class="book-strip" id="book">
+  <div class="wrap reveal">
+    <span class="script-big">ready to make something?</span><br>
+    <h2 class="ransom" style="font-size:clamp(1.3rem,3vw,2rem);margin:.4em 0 .2em">
+      <span class="scrap s-brown r-1">Book your session</span>
+    </h2>
+    <p style="max-width:52ch;margin:0 auto">Walk in or message us to reserve your spot — bring a friend, pick an activity, and leave with something you made yourself.</p>
+    <a class="btn btn-rust" href="#" >Message us</a>
+    <a class="btn btn-sage" href="#services">See activities</a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-panel torn brownbg reveal">
+      <img class="flogo" src="assets/logo-white.png" alt="Studio logo">
+      <p>A creative art studio in Jordan — canvas, fabric, pottery, clay &amp; more.</p>
+      <span class="script-line">made with messy hands</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// shrink logo / hide scoop on scroll (from index_backup_20260611)
+(function () {
+  var hdr = document.querySelector('header');
+  function onScroll() {
+    if (window.scrollY > 24) hdr.classList.add('scrolled');
+    else hdr.classList.remove('scrolled');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+// hamburger menu toggle (from index_backup_20260611)
+(function () {
+  var btn = document.querySelector('.nav-toggle');
+  var menu = document.getElementById('navmenu');
+  if (btn && menu) {
+    btn.addEventListener('click', function () {
+      var open = menu.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    function closeMenu() {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+    menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+    document.addEventListener('click', function (e) {
+      if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+  }
+})();
+
+// loading screen reveal (from index_backup_20260611)
+(function () {
+  var loader = document.getElementById('loader');
+  var revealed = false;
+  function openSite() {
+    if (revealed) return;
+    revealed = true;
+    loader.classList.add('hidden');
+    setTimeout(function () { loader.style.display = 'none'; }, 900);
+  }
+  window.addEventListener('load', function () { setTimeout(openSite, 1500); });
+  setTimeout(openSite, 4000); // safety net
+})();
+
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

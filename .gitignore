@@ -1,0 +1,9 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# Backups & local screenshots (not part of the site)
+index_backup_*.html
+Screenshot *.png

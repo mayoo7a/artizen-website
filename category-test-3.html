@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artizen — Visual First Test</title>
+<style>
+/* ---------- Brand foundations ---------- */
+@font-face{font-family:'Alta';src:url('assets/fonts/Alta-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Alta';src:url('assets/fonts/Alta-Light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Feeling Passionate';src:url('assets/fonts/FeelingPassionate.woff2') format('woff2');font-weight:400;font-display:swap}
+
+:root{
+  --olive-green:#7A7E5D;
+  --sage-green:#AFB68C;
+  --rust-orange:#A45024;
+  --terracotta:#C98146;
+  --dark-brown:#65402D;
+  --mauve-brown:#805B52;
+  --warm-beige:#E0D3C0;
+  --cream:#FDF0DD;
+  --ink:#3E3326;
+  --script:'Feeling Passionate', cursive;
+  --sans:'Alta',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.5;letter-spacing:.02em;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--sage-green);color:#fff}
+h1,h2{font-family:var(--sans);font-weight:400}
+.script{font-family:var(--script);font-weight:400}
+.wrap{width:min(1120px,94%);margin-inline:auto}
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-.12em;fill:currentColor;flex:none}
+
+.demo-label{
+  background:var(--ink);color:var(--cream);
+  text-align:center;padding:.7rem 1rem;
+  letter-spacing:.25em;text-transform:uppercase;font-size:.72rem;
+}
+.demo-label b{color:var(--terracotta);font-weight:400}
+
+/* ---------- intro: almost no words ---------- */
+.intro{padding:3.8rem 0 1rem;text-align:center}
+.intro .script{color:var(--terracotta);font-size:clamp(1.7rem,3.4vw,2.5rem);display:block}
+.intro h1{font-size:clamp(1.9rem,4.2vw,3rem);letter-spacing:.14em;text-transform:uppercase;color:var(--dark-brown)}
+
+/* ---------- zone word: giant handwritten word, that's the whole heading ---------- */
+.zone-word{
+  text-align:center;
+  font-family:var(--script);
+  font-size:clamp(3.2rem,8vw,6rem);
+  line-height:1;
+  padding:3.6rem 0 1.8rem;
+}
+.zone-word.create{color:var(--terracotta)}
+.zone-word.learn{color:var(--olive-green)}
+.zone-word.celebrate{color:var(--mauve-brown)}
+.zone-word svg.under{display:block;margin:.4rem auto 0;width:min(260px,55%);height:14px}
+.zone-word svg.under path{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;opacity:.55}
+
+/* ---------- visual mosaic ---------- */
+.mosaic{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:1.4rem;
+  padding-bottom:2.5rem;
+}
+.tile{
+  position:relative;overflow:visible;
+  width:calc(12.5% - 1.23rem);
+  aspect-ratio:1/1.18;
+  margin-bottom:.6rem;
+  display:block;
+}
+.tile img{width:100%;height:100%;object-fit:cover;
+  border-radius:50% 50% 16px 16px / 42% 42% 16px 16px;
+  box-shadow:0 14px 34px rgba(101,64,45,.13)}
+/* one word — frosted-glass pill for readability (no gradient) */
+.label{
+  position:absolute;left:50%;bottom:0;transform:translate(-50%,50%);z-index:3;
+  text-align:center;color:var(--cream);white-space:nowrap;
+  letter-spacing:.22em;text-transform:uppercase;
+  font-size:clamp(.52rem,1vw,.64rem);
+  padding:.55em 1.2em;border-radius:12px;
+  background:rgba(122,126,93,.40);
+  -webkit-backdrop-filter:blur(9px) saturate(125%);
+  backdrop-filter:blur(9px) saturate(125%);
+  border:1px solid rgba(253,240,221,.32);
+  box-shadow:0 6px 18px rgba(54,57,40,.22);
+  text-shadow:0 1px 3px rgba(54,57,40,.4);
+}
+.price-chip{
+  position:absolute;top:.9rem;right:.9rem;z-index:2;
+  background:var(--cream);color:var(--rust-orange);
+  font-family:var(--script);font-size:1.02rem;
+  padding:.22em .85em;border-radius:12px;
+  box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.solo-dot{
+  position:absolute;top:1rem;left:1rem;z-index:2;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(253,240,221,.92);color:var(--olive-green);
+  display:flex;align-items:center;justify-content:center;
+}
+.solo-dot .ic{width:18px;height:18px}
+
+/* divider blob strip between zones */
+.blob-strip{display:flex;justify-content:center;gap:1.1rem;padding:1.4rem 0}
+.blob-strip span{width:12px;height:12px;border-radius:50%;display:inline-block}
+.blob-strip .b1{background:var(--terracotta)}
+.blob-strip .b2{background:var(--sage-green)}
+.blob-strip .b3{background:var(--mauve-brown)}
+
+/* legend: three dots, three words — the only explanation on the page */
+.legend{
+  display:flex;justify-content:center;gap:2.4rem;flex-wrap:wrap;
+  padding:1.6rem 0 .6rem;
+}
+.legend span{
+  display:inline-flex;align-items:center;gap:.6em;
+  font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mauve-brown);
+}
+.legend i{width:13px;height:13px;border-radius:50%;display:inline-block}
+.legend .c1 i{background:var(--terracotta)}
+.legend .c2 i{background:var(--olive-green)}
+.legend .c3 i{background:var(--mauve-brown)}
+
+/* CTA — one line */
+.cta{background:var(--olive-green);color:var(--cream);text-align:center;padding:3.6rem 1rem;margin-top:2.5rem}
+.cta .script{color:var(--sage-green);font-size:1.9rem;display:block;margin-bottom:1.2rem}
+.btn{display:inline-flex;align-items:center;gap:.55em;padding:.95em 2.4em;border-radius:12px;letter-spacing:.14em;text-transform:uppercase;font-size:.84rem;background:var(--cream);color:var(--olive-green)}
+
+footer{background:var(--dark-brown);color:var(--warm-beige);text-align:center;padding:1.5rem 1rem;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* tablets / large phones: 2-up grid */
+@media (max-width:900px){
+  .mosaic{gap:1.1rem}
+  .tile{width:calc(25% - .83rem)}
+  .price-chip{font-size:.8rem}
+  .zone-word{padding:2.6rem 0 1.4rem}
+}
+
+/* phones */
+@media (max-width:560px){
+  .demo-label{font-size:.62rem;letter-spacing:.18em;padding:.6rem .8rem}
+  .intro{padding:2.4rem 0 .4rem}
+  .intro h1{font-size:clamp(1.6rem,7vw,2.1rem)}
+  .zone-word{font-size:clamp(2.7rem,13vw,3.6rem);padding:2rem 0 1.3rem}
+  .zone-word svg.under{width:min(180px,48%)}
+  .wrap{width:92%}
+  .mosaic{gap:.6rem;padding-bottom:1.8rem}
+  .tile{width:calc(25% - .45rem);aspect-ratio:1/1.12;margin-bottom:.35rem}
+  .label{font-size:.38rem;letter-spacing:.04em;padding:.4em .55em;border-radius:8px}
+  .price-chip{top:.35rem;right:.35rem;font-size:.66rem;padding:.18em .5em;border-radius:8px}
+  .solo-dot{top:.35rem;left:.35rem;width:24px;height:24px}
+  .solo-dot .ic{width:13px;height:13px}
+  .blob-strip{padding:1rem 0;gap:.85rem}
+  .cta{padding:2.8rem 1rem;margin-top:1.8rem}
+  .cta .script{font-size:1.6rem}
+  .btn{padding:.9em 1.9em;font-size:.8rem}
+}
+
+/* very small phones: single, larger showcase cards */
+@media (max-width:380px){
+  .tile{width:calc(50% - .35rem);aspect-ratio:1/1.12;margin-bottom:.4rem}
+  .mosaic{gap:.7rem}
+}
+</style>
+</head>
+<body>
+
+<!-- shared small icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.8-10-9.3C.4 8.7 2.4 5 6 5c2.2 0 3.6 1.2 4.5 2.6L12 9.4l1.5-1.8C14.4 6.2 15.8 5 18 5c3.6 0 5.6 3.7 4 6.7-2.5 4.5-10 9.3-10 9.3z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0 2c-4.4 0-8 2.2-8 5v2h16v-2c0-2.8-3.6-5-8-5z"/></symbol>
+  </defs>
+</svg>
+
+<div class="demo-label">Test <b>03</b> — Visual first: all images, almost no words</div>
+
+<!-- ================= INTRO ================= -->
+<div class="intro">
+  <span class="script">pick with your eyes</span>
+  <h1>What We Do</h1>
+</div>
+
+
+<!-- ════════════ CREATE ════════════ -->
+<div class="zone-word create reveal">create
+  <svg class="under" viewBox="0 0 260 14"><path d="M4 9 C 55 3, 120 13, 190 7 C 225 4, 245 10, 256 7"/></svg>
+</div>
+
+<div class="wrap">
+  <div class="mosaic">
+    <a class="tile reveal" href="tel:0796504018">
+      <img src="assets/img/web-canvas.jpg" alt="Canvas painting">
+      <span class="label">Canvas</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.07s">
+      <img src="assets/img/u_tote.jpg" alt="Tote bag painting">
+      <span class="label">Tote Bags</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.14s">
+      <img src="assets/img/u_plates.jpg" alt="Pottery painting">
+      <span class="label">Pottery</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.07s">
+      <img src="assets/img/web-mug.jpg" alt="A blank mug ready to paint">
+      <span class="label">Mugs</span>
+    </a>
+  </div>
+</div>
+
+<div class="blob-strip" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+<!-- ════════════ LEARN ════════════ -->
+<div class="zone-word learn reveal">learn
+  <svg class="under" viewBox="0 0 260 14"><path d="M4 9 C 55 3, 120 13, 190 7 C 225 4, 245 10, 256 7"/></svg>
+</div>
+
+<div class="wrap">
+  <div class="mosaic">
+    <a class="tile reveal" href="tel:0796504018">
+      <img src="assets/img/web-guitar.jpg" alt="Hands playing acoustic guitar">
+      <span class="solo-dot" title="Individual lessons"><svg class="ic"><use href="#i-user"/></svg></span>
+      <span class="label">Guitar</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.07s">
+      <img src="assets/img/web-piano.jpg" alt="Warm vintage piano keys">
+      <span class="solo-dot" title="Individual lessons"><svg class="ic"><use href="#i-user"/></svg></span>
+      <span class="label">Piano</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.14s">
+      <img src="assets/img/web-drums.jpg" alt="Drum kit with drumsticks">
+      <span class="solo-dot" title="Individual lessons"><svg class="ic"><use href="#i-user"/></svg></span>
+      <span class="label">Drums</span>
+    </a>
+  </div>
+</div>
+
+<div class="blob-strip" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+<!-- ════════════ CELEBRATE ════════════ -->
+<div class="zone-word celebrate reveal">celebrate
+  <svg class="under" viewBox="0 0 260 14"><path d="M4 9 C 55 3, 120 13, 190 7 C 225 4, 245 10, 256 7"/></svg>
+</div>
+
+<div class="wrap">
+  <div class="mosaic">
+    <a class="tile reveal" href="tel:0796504018">
+      <img src="assets/img/web-balloons.jpg" alt="Colorful birthday balloons">
+      <span class="label">Birthdays</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.07s">
+      <img src="assets/img/u_candle.jpg" alt="Candle-lit proposal setting">
+      <span class="label">Proposals</span>
+    </a>
+    <a class="tile reveal" href="tel:0796504018" style="transition-delay:.2s">
+      <img src="assets/img/web-gathering.jpg" alt="Warm candle-lit table with friends">
+      <span class="label">Gatherings</span>
+    </a>
+  </div>
+</div>
+
+<!-- ================= CTA ================= -->
+<section class="cta">
+  <span class="script">saw something you like?</span>
+  <a class="btn" href="tel:0796504018">Call 0796504018</a>
+</section>
+
+<footer>
+  Artizen — visual-first test page <svg class="ic"><use href="#i-heart"/></svg> not for production
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
